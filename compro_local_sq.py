@@ -6,75 +6,96 @@ import streamlit as st
 st.set_page_config(
     page_title="Compro Local - SQ",
     page_icon="🏪",
-    layout="wide",
+    layout="centered", # Cambiado a centered para simular pantalla de celular
     initial_sidebar_state="collapsed"
 )
 
 # ==============================================================================
-# ESTILOS CSS MEJORADOS (Solo cambiamos esto)
+# ESTILOS CSS - LOOK APP NATIVA
 # ==============================================================================
 def local_css():
     st.markdown("""
     <style>
-        /* Fuente moderna de Google Fonts */
+        /* 1. Fuente Moderna */
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-        
         html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
         
-        :root {
-            --primary: #FF6B35;
-            --accent: #EF476F;
-            --bg: #FFF8F0;
-            --text: #2D3142;
-            --success: #06D6A0;
+        /* 2. Fondo general tipo App y contenedor móvil */
+        .stApp { background-color: #F2F4F7; }
+        .block-container {
+            max-width: 650px; /* Limita el ancho para que parezca app en PC */
+            padding-top: 2rem;
+            padding-bottom: 4rem;
         }
-        
-        .stApp { background-color: var(--bg); color: var(--text); }
-        header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
-        
-        /* Títulos */
-        h1 { color: var(--primary); text-align: center; font-weight: 800; font-size: 2.8rem !important; margin-bottom: 0rem; letter-spacing: -1px; }
-        h2, h3 { color: var(--text); font-weight: 700; }
 
-        /* Navegación estilo Píldora (Para el st.radio) */
-        div[role="radiogroup"] {
-            display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;
-        }
-        div[role="radiogroup"] > label {
-            background-color: white; padding: 10px 25px; border-radius: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #EAEAEA;
-            transition: all 0.3s; cursor: pointer;
-        }
-        div[role="radiogroup"] > label:hover { transform: translateY(-2px); border-color: var(--primary); }
+        /* 3. Ocultar menús de Streamlit */
+        header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
+
+        /* 4. Títulos */
+        h1 { color: #FF6B35; text-align: center; font-weight: 800; font-size: 2.5rem !important; letter-spacing: -1px; margin-bottom: 0; }
+        h2, h3 { color: #2D3142; font-weight: 700; }
+
+        /* 5. MENÚ DE NAVEGACIÓN (Convertir Radio en Botones Píldora) */
+        /* Ocultar el circulito del radio button */
+        div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
         
-        /* Tarjetas (Cards) */
+        /* Estilo de la píldora */
+        div[data-testid="stRadio"] div[role="radiogroup"] label {
+            background-color: #FFFFFF; border-radius: 30px; padding: 10px 20px;
+            margin-right: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.3s ease; border: 2px solid transparent; cursor: pointer;
+        }
+        
+        /* Texto dentro de la píldora */
+        div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+            color: #555 !important; font-weight: 600 !important; font-size: 15px !important;
+        }
+
+        /* Píldora Seleccionada (Activa) */
+        div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] {
+            background-color: #FF6B35; border-color: #FF6B35;
+            box-shadow: 0 6px 15px rgba(255, 107, 53, 0.35);
+        }
+        div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] div[data-testid="stMarkdownContainer"] p {
+            color: #FFFFFF !important; font-weight: 800 !important;
+        }
+
+        /* 6. Tarjetas Estilo App */
         .card {
-            background-color: white; border-radius: 20px; padding: 0; overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px;
-            border: 1px solid #FFF; transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #FFFFFF; border-radius: 24px; padding: 0; overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04); margin-bottom: 20px;
+            border: 1px solid #F0F0F0; transition: transform 0.2s ease;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(255, 107, 53, 0.15); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px 20px 0 0; }
-        .card-body { padding: 20px; }
+        .card:hover { transform: scale(1.01); }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 18px; }
         
-        /* Botones */
+        /* 7. Botones con Degradado */
         .stButton > button {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            color: white; border-radius: 15px; padding: 12px 25px; font-weight: 700;
-            border: none; width: 100%; transition: all 0.3s; box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            background: linear-gradient(135deg, #FF6B35 0%, #EF476F 100%) !important;
+            color: white !important; border-radius: 14px !important; border: none !important;
+            padding: 12px 20px !important; font-weight: 700 !important; width: 100%;
+            transition: all 0.3s !important; box-shadow: 0 4px 12px rgba(239, 71, 111, 0.25) !important;
         }
-        .stButton > button:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5); color: white; }
-        
-        /* Etiquetas y Precios */
-        .promo-badge { background-color: var(--accent); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; margin-bottom: 8px; }
-        .price { color: var(--success); font-size: 1.4rem; font-weight: 800; margin: 5px 0; }
+        .stButton > button:hover {
+            transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(239, 71, 111, 0.4) !important;
+        }
+        .stButton > button p { color: white !important; font-weight: 700 !important; }
+
+        /* 8. Etiquetas */
+        .promo-badge { background-color: #EF476F; color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .price { color: #06D6A0; font-size: 1.4rem; font-weight: 800; margin: 4px 0; }
+
+        /* 9. Ajustes de componentes nativos */
+        .stSelectbox > div { border-radius: 12px; }
+        div[data-testid="stForm"] { border-radius: 20px; border: 1px solid #F0F0F0; background: #FFFFFF; padding: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
 local_css()
 
 # ==============================================================================
-# DATOS SIMULADOS (Lógica Original Intacta)
+# DATOS SIMULADOS (Lógica 100% intacta)
 # ==============================================================================
 NEGOCIOS = [
     {"id": 1, "nombre": "Panadería La Espiga", "categoria": "Comida", "descripcion": "Pan fresco y tradicional horneado a leña.", "imagen": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop", "destacado": True},
@@ -96,7 +117,7 @@ PROMOCIONES = [
 ]
 
 # ==============================================================================
-# BARRA DE NAVEGACIÓN
+# BARRA DE NAVEGACIÓN (Se verá como botones)
 # ==============================================================================
 seccion = st.radio(
     "Navegación",
@@ -105,12 +126,14 @@ seccion = st.radio(
     label_visibility="collapsed"
 )
 
+st.write("") # Espacio
+
 # ==============================================================================
-# CONTENIDO DE CADA SECCIÓN
+# CONTENIDO
 # ==============================================================================
 if seccion == "🏠 Inicio":
     st.markdown("<h1>Compro Local - SQ</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #666; font-size: 1.2rem; margin-bottom: 30px;'>Apoya lo nuestro. Compra en Santander de Quilichao.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #666; font-size: 1.1rem; margin-bottom: 25px;'>Apoya lo nuestro. Compra en Santander de Quilichao.</p>", unsafe_allow_html=True)
     
     st.image("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=300&fit=crop", use_container_width=True, caption="Lo mejor de nuestra tierra, a un clic.")
     
@@ -123,8 +146,8 @@ if seccion == "🏠 Inicio":
                 <img src="{negocio['imagen']}" alt="{negocio['nombre']}">
                 <div class="card-body">
                     <span class="promo-badge">Recomendado</span>
-                    <h4 style="margin-top: 5px; margin-bottom: 5px;">{negocio['nombre']}</h4>
-                    <p style="font-size: 0.95rem; color: #555;">{negocio['descripcion']}</p>
+                    <h4 style="margin-top: 10px; margin-bottom: 5px;">{negocio['nombre']}</h4>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 0;">{negocio['descripcion']}</p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -167,7 +190,7 @@ elif seccion == "🛒 Productos":
             <div class="card">
                 <img src="{prod['imagen']}" alt="{prod['nombre']}">
                 <div class="card-body">
-                    <h4 style="margin-top: 0; margin-bottom: 5px;">{prod['nombre']}</h4>
+                    <h4 style="margin-top: 0; margin-bottom: 4px;">{prod['nombre']}</h4>
                     <p class="price">${prod['precio']:,.0f} COP</p>
                 </div>
             </div>
@@ -187,8 +210,8 @@ elif seccion == "🎉 Promos":
             <img src="{promo['imagen']}" alt="{promo['titulo']}">
             <div class="card-body">
                 <h4 style="margin-top: 0; margin-bottom: 5px;">{promo['titulo']}</h4>
-                <p style="font-size: 0.9rem; color: var(--primary); font-weight: 600;">{promo['negocio']}</p>
-                <p>{promo['descripcion']}</p>
+                <p style="font-size: 0.9rem; color: #FF6B35; font-weight: 600;">{promo['negocio']}</p>
+                <p style="color: #666;">{promo['descripcion']}</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
