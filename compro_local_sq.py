@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# ESTILOS CSS - LOOK APP NATIVA (CON CORRECCIÓN DE COLORES)
+# ESTILOS CSS - LOOK APP NATIVA PREMIUM (SEGMENTED CONTROL)
 # ==============================================================================
 def local_css():
     st.markdown("""
@@ -20,86 +20,85 @@ def local_css():
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
         html, body, [class*="css"] { font-family: 'Outfit', sans-serif !important; }
         
-        /* 2. Fondo general y FORZAR COLOR DE TEXTO OSCURO */
-        .stApp { background-color: #F2F4F7; color: #2D3142 !important; }
-        .block-container {
-            max-width: 650px;
-            padding-top: 2rem;
-            padding-bottom: 4rem;
-        }
+        /* 2. Fondo general y color de texto */
+        .stApp { background-color: #F8F9FA; color: #2D3142 !important; }
+        .block-container { max-width: 650px; padding-top: 1rem; padding-bottom: 4rem; }
 
-        /* Forzar color de texto oscuro en párrafos, listas y markdown */
-        div[data-testid="stMarkdownContainer"] p, 
-        div[data-testid="stMarkdownContainer"] span, 
-        div[data-testid="stMarkdownContainer"] h1, 
-        div[data-testid="stMarkdownContainer"] h2, 
-        div[data-testid="stMarkdownContainer"] h3,
-        div[data-testid="stMarkdownContainer"] h4,
-        p, span {
+        div[data-testid="stMarkdownContainer"] p, div[data-testid="stMarkdownContainer"] span, p, span {
             color: #2D3142 !important;
         }
 
-        /* 3. Ocultar menús de Streamlit */
         header {visibility: hidden;} footer {visibility: hidden;} #MainMenu {visibility: hidden;}
 
-        /* 4. Títulos */
-        h1 { color: #FF6B35 !important; text-align: center; font-weight: 800; font-size: 2.5rem !important; letter-spacing: -1px; margin-bottom: 0; }
+        /* 3. Títulos */
+        h1 { color: #FF6B35 !important; text-align: center; font-weight: 800; font-size: 2.5rem !important; margin-bottom: 0; }
         h2, h3 { color: #2D3142 !important; font-weight: 700; }
 
-        /* 5. MENÚ DE NAVEGACIÓN (Píldoras) */
-        div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child { display: none !important; }
-        
-        div[data-testid="stRadio"] div[role="radiogroup"] label {
-            background-color: #FFFFFF; border-radius: 30px; padding: 10px 20px;
-            margin-right: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            transition: all 0.3s ease; border: 2px solid transparent; cursor: pointer;
+        /* =========================================================
+           4. MENÚ DE NAVEGACIÓN (ESTILO SEGMENTED CONTROL - iOS)
+           ========================================================= */
+        /* Contenedor de la barra */
+        div[data-testid="stRadio"] > div[role="radiogroup"] {
+            display: flex; background-color: #E5E7EB; /* Fondo gris claro */
+            border-radius: 30px; padding: 4px; width: 100%;
+            margin: 0 auto 20px auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            gap: 0;
         }
         
-        /* Texto de las píldoras inactivas */
-        div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-            color: #555555 !important; font-weight: 600 !important; font-size: 15px !important;
+        /* Ocultar el circulito del radio button */
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child { display: none !important; }
+        
+        /* Botones individuales (transparentes por defecto) */
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+            flex: 1; text-align: center; padding: 10px 0 !important;
+            border-radius: 26px !important; margin: 0 !important;
+            background: transparent !important; border: none !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; cursor: pointer;
+        }
+        
+        /* Texto inactivo */
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label p {
+            color: #6B7280 !important; font-weight: 600 !important; font-size: 14px !important; margin: 0 !important;
+        }
+        
+        /* Botón ACTIVO (Fondo blanco, sombra y texto naranja) */
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] {
+            background-color: #FFFFFF !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+        }
+        
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] p {
+            color: #FF6B35 !important; font-weight: 800 !important;
         }
 
-        /* Píldora Seleccionada (Activa) - Forzar texto blanco */
-        div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] {
-            background-color: #FF6B35; border-color: #FF6B35;
-            box-shadow: 0 6px 15px rgba(255, 107, 53, 0.35);
-        }
-        div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] div[data-testid="stMarkdownContainer"] p {
-            color: #FFFFFF !important; font-weight: 800 !important;
-        }
-
-        /* 6. Tarjetas */
+        /* ========================================================= */
+        
+        /* 5. Tarjetas */
         .card {
             background-color: #FFFFFF; border-radius: 24px; padding: 0; overflow: hidden;
             box-shadow: 0 8px 20px rgba(0,0,0,0.04); margin-bottom: 20px;
-            border: 1px solid #F0F0F0; transition: transform 0.2s ease;
+            border: 1px solid #F0F0F0; transition: transform 0.2s ease, box-shadow 0.2s;
         }
-        .card:hover { transform: scale(1.01); }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
         .card img { width: 100%; height: 180px; object-fit: cover; }
         .card-body { padding: 18px; }
         
-        /* 7. Botones con Degradado - Forzar texto blanco */
+        /* 6. Botones de acción */
         .stButton > button {
             background: linear-gradient(135deg, #FF6B35 0%, #EF476F 100%) !important;
             color: white !important; border-radius: 14px !important; border: none !important;
             padding: 12px 20px !important; font-weight: 700 !important; width: 100%;
             transition: all 0.3s !important; box-shadow: 0 4px 12px rgba(239, 71, 111, 0.25) !important;
         }
-        .stButton > button:hover {
-            transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(239, 71, 111, 0.4) !important;
-        }
-        /* Asegurar que el texto de los botones sea blanco */
+        .stButton > button:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(239, 71, 111, 0.4) !important; }
         .stButton > button p { color: #FFFFFF !important; font-weight: 700 !important; }
 
-        /* 8. Etiquetas */
-        .promo-badge { background-color: #EF476F; color: white !important; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* 7. Etiquetas y Precios */
+        .promo-badge { background-color: #EF476F; color: white !important; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .price { color: #06D6A0 !important; font-size: 1.4rem; font-weight: 800; margin: 4px 0; }
 
-        /* 9. Cajas de selección (Selectbox) */
-        div[data-baseweb="select"] > div {
-            background-color: #FFFFFF !important; border-radius: 12px !important; color: #2D3142 !important;
-        }
+        /* 8. Selectbox */
+        div[data-baseweb="select"] > div { background-color: #FFFFFF !important; border-radius: 12px !important; color: #2D3142 !important; }
         div[data-baseweb="select"] * { color: #2D3142 !important; }
     </style>
     """, unsafe_allow_html=True)
@@ -137,8 +136,6 @@ seccion = st.radio(
     horizontal=True,
     label_visibility="collapsed"
 )
-
-st.write("") # Espacio
 
 # ==============================================================================
 # CONTENIDO
